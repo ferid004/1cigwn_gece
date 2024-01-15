@@ -8,6 +8,8 @@ function Add() {
 
   ///////// get
   const [product, setProduct] = useState([])
+  const [sort, setSort] = useState('')
+  const [search, setSearch] = useState('')
   const axiosAll = async () => {
     const res = await axios.get('http://localhost:3000/')
     const data = res.data.data
@@ -66,6 +68,14 @@ function Add() {
 
         <br />
         <br />
+        <input type="text" onChange={(e)=>setSearch(e.target.value)}/>
+        <br />
+        <br />
+        <button onClick={()=>setSort({proprety:'price',asc:true})}>art</button>
+        <button onClick={()=>setSort({proprety:'price',asc:false})}>azl</button>
+        <button onClick={()=>setSort(null)}>default</button>
+        <br />
+        <br />
         <table border={1}>
           <thead>
             <tr>
@@ -78,7 +88,18 @@ function Add() {
           </thead>
           <tbody>
 
-            {product && product.map((item) => (
+            {product && product
+            .filter(x=>x.name.toLowerCase().includes(search.toLowerCase()))
+            .sort((a,b) => {
+              if (sort&& sort.asc===true) {
+                return (a[sort.proprety] > b[sort.proprety]) ? 1 : ((b[sort.proprety] > a[sort.proprety]) ? -1 : 0)
+              }else if (sort&& sort.asc===false) {
+                return (a[sort.proprety] < b[sort.proprety]) ? 1 : ((b[sort.proprety] < a[sort.proprety]) ? -1 : 0)
+              }else{
+                null
+              }
+            })
+            .map((item) => (
               <tr key={item._id}>
                 <td>{item.name}</td>
                 <td>
